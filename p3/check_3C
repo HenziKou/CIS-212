@@ -1,0 +1,43 @@
+#!/bin/bash
+
+
+if [[ ! -f 3C_correct_output ]] ; then
+   echo "Error: you need to download the file 3C_correct_output and place it in this directory."
+   echo "Exiting."
+   exit 1
+fi
+
+if [[ ! -f 3C_input ]] ; then
+   echo "Error: you need to download the file 3C_input and place it in this directory."
+   echo "Exiting."
+   exit 1
+fi
+
+if [[ ! -f proj3C.c ]] ; then
+   echo "Error: you need to place the file proj3C.c in the current directory."
+   echo "Exiting."
+   exit 1
+fi
+
+gcc -o proj3C proj3C.c
+if [[ $? != 0 ]] ; then
+   echo "Compile failure!"
+   exit 1
+fi
+
+mv 3C_input 3C_input.$$
+./proj3C 3C_input.$$ > your_output
+mv 3C_input.$$ 3C_input
+
+#Check for correct output
+diff 3C_correct_output your_output
+if [[ $? != 0 ]] ; then
+   echo "Your output is not correct."
+   exit 1
+fi
+
+echo "Your program appears to be working correctly."
+echo "It compiles, runs, and generates the correct output."
+echo "Please upload your code to Canvas, following the instructions in the prompt."
+echo "Grading will consist of the steps performed by this script, complemented by inspection of your code."
+

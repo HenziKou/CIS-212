@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [[ ! -f correct_output_proj1c ]] ; then 
+   echo "Cannot find file correct_output_proj1c"
+   exit 1
+fi
+if [[ ! -f correct_output_passwd_212 ]] ; then 
+   echo "Cannot find file correct_output_passwd_212"
+   exit 1
+fi
+if [[ ! -f passwd_212 ]] ; then 
+   echo "Cannot find file passwd_212"
+   exit 1
+fi
+if [[ ! -f proj1c.sh ]] ; then 
+   echo "Cannot find your script (proj1c.sh)"
+   exit 1
+fi
+
+./proj1c.sh > ./your_output
+if [[ ! -f passwd_212_no90s ]] ; then
+   echo "Cannot find output file passwd_212_no90s.  Your script should generate this file."
+   exit 1
+fi
+
+diff passwd_212_no90s correct_output_passwd_212
+if [[ $? != 0 ]] ; then
+   echo ""
+   echo "Your passwd_212_no90s file does not match the correct_output_passwd_212 file"
+   echo ""
+   exit 1
+fi
+
+diff your_output correct_output_proj1c
+if [[ $? != 0 ]] ; then
+   echo ""
+   echo "Your output does not match the correct output (see output_proj1c)"
+   echo ""
+   exit 1
+fi
+
+echo "Congratulations! ... your passwd_212_no90s file matches the correct output and your output printed to the terminal also matches."
+echo "Please review the prompt to make sure you followed the guidelines.  In particular, you should write your script assuming I could give a different passwd_212 input.  This means you should be calculating line numbers, not hardcoding them."
+echo "If you have followed the guidelines, then you should submit your proj1c.sh file."
+exit 0
