@@ -1,0 +1,100 @@
+#!/bin/bash
+
+function diff_files
+{
+    cat $1 | head -n 3 > file1_header
+    cat $2 | head -n 3 > file2_header
+    diff file1_header file2_header > /dev/null
+    if [[ $? != 0 ]] ; then
+        echo "Your $2 has this header: "
+        cat file2_header
+        echo "But the header should be: "
+        cat file1_header
+        exit 1
+    fi
+
+    file1_size=$(ls -l $1 | awk '{ print $5 }')
+    file2_size=$(ls -l $2 | awk '{ print $5 }')
+    if [[ "$file1_size" != "$file2_size" ]] ; then
+        echo "Output $2 has incorrect size!  Correct size is ${file1_size}, but your version has ${file2_size} bytes"
+        exit 1
+    fi
+
+    echo "You generated output $2, which should be the same as $1"
+    echo "Their headers match, and they are the same size."
+    echo "But their pixel data is different."
+    echo "You should view the images and look for differences."
+    exit 1
+}
+
+if [[ ! -f 2G_input.pnm ]] ; then
+   echo "You need to download 2G_input.pnm and place it in the current directory."
+   exit 1
+fi
+
+gcc proj2G.c
+
+echo "RUNNING YOUR PROGRAM"
+echo ""
+echo ""
+./a.out
+if [[ $? != 0 ]] ; then
+   echo "YOUR PROGRAM DID NOT SUCCESSFULLY COMPLETE.  Stopping script..."
+   exit 1
+fi
+echo ""
+echo ""
+echo "DONE RUNNING YOUR PROGRAM"
+echo ""
+echo ""
+
+
+if [[ ! -f output_of_read.pnm ]] ; then
+   echo "You didn't seem to produce anything?  ... Implement ReadImage and WriteImage."
+   exit 1
+fi
+
+diff 2G_input.pnm output_of_read.pnm >/dev/null
+if [[ $? == 0 ]] ; then
+   echo "output_of_read.pnm matches 2G_input.pnm ... good!"
+else
+   diff_files 2G_input.pnm output_of_read.pnm
+fi
+
+if [[ ! -f yellow_diagonal.pnm ]] ; then
+   echo "You have successfully created output_of_read.pnm."
+   echo "The next step is to create yellow_diagonal.pnm."
+   echo "(If you feel you did implement YellowDiagonal, you probably need to change the if macro in main)"
+   exit 1
+fi
+
+if [[ ! -f yellow_diagonal_solution.pnm ]]; then
+   echo "You need to download yellow_diagonal_solution.pnm and place it in the current directory."
+   exit 1
+fi
+
+diff yellow_diagonal_solution.pnm yellow_diagonal.pnm >/dev/null
+if [[ $? == 0 ]] ; then
+   echo "yellow_diagonal.pnm matches solution ... good!"
+else
+   diff_files yellow_diagonal_solution.pnm yellow_diagonal.pnm
+fi
+
+if [[ ! -f 2G_output.pnm ]] ; then
+   echo "You have successfully created yellow_diagonal.pnm."
+   echo "The next step is to create 2G_output.pnm."
+   echo "(If you feel you did implement LeftRightCombine, you probably need to change the if macro in main)"
+   exit 1
+fi
+
+if [[ ! -f 2G_solution.pnm ]]; then
+   echo "You need to download 2G_solution.pnm and place it in the current directory."
+   exit 1
+fi
+
+diff 2G_solution.pnm 2G_output.pnm >/dev/null
+if [[ $? == 0 ]] ; then
+   echo "2G_output.pnm matches solution ... good!  Looks like you are ready to submit! :)"
+else
+   diff_files 2G_solution.pnm 2G_output.pnm
+fi

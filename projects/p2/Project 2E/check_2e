@@ -1,0 +1,33 @@
+# set up a file called correct output
+echo "12" > correct_output
+echo "0" >> correct_output
+echo "246" >> correct_output
+echo "246" >> correct_output
+echo "0" >> correct_output
+echo "1357" >> correct_output
+echo "-776900" >> correct_output
+echo "ERROR: number has character that is outside 0-9" >> correct_output
+echo "ERROR: number has 10 or more digits" >> correct_output
+echo "ERROR: operation may only be + or -" >> correct_output
+echo "ERROR: operation may only be + or -" >> correct_output
+
+gcc -o proj2e proj2e.c
+./proj2e 4 + 8 > your_output
+./proj2e 123 - 123 >> your_output
+./proj2e 123 - -123 >> your_output
+./proj2e 123 + 123 >> your_output
+./proj2e 123 + -123 >> your_output
+./proj2e 123 + 1234 >> your_output
+./proj2e 12334 - 789234 >> your_output
+./proj2e 12sd334 - -789234 >> your_output
+./proj2e 123312323494 - 789234 >> your_output
+./proj2e 7 -- 789234 >> your_output
+./proj2e 123394 ! 789234 >> your_output
+
+diff correct_output your_output
+if [[ $? == 0 ]] ; then
+   echo "No difference!  You have it right"
+else
+   echo "Differences!  You have it wrong"
+fi
+
